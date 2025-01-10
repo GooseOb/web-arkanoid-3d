@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import { scene } from "./scene";
 
-export const createExplosion = (position: THREE.Vector3) => {
+export const createExplosion = (
+  position: THREE.Vector3,
+  color: THREE.Color,
+) => {
   const PARTICLE_COUNT = 50;
   const PARTICLE_SIZE = 0.05;
 
@@ -31,7 +34,7 @@ export const createExplosion = (position: THREE.Vector3) => {
 
   const material = new THREE.PointsMaterial({
     size: PARTICLE_SIZE,
-    color: 0xff9900,
+    color,
     transparent: true,
     opacity: 1.0,
   });

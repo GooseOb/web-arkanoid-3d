@@ -12,6 +12,7 @@ import { scene, paddle, ball } from "./scene";
 import { camera } from "./camera";
 import { renderer } from "./renderer";
 import { createExplosion } from "./explode";
+import { MeshStandardMaterial } from "three";
 
 const BALL_ACCELERATION_FACTOR = 1.03;
 export const animate = () => {
@@ -51,7 +52,8 @@ export const animate = () => {
   // Ball collision with blocks
   state.blocks = state.blocks.filter((block) => {
     if (ball.position.distanceTo(block.position) < 0.3) {
-      createExplosion(block.position.clone());
+      const blockColor = (block.material as MeshStandardMaterial).color;
+      createExplosion(block.position.clone(), blockColor);
       scene.remove(block);
       state.ballSpeed.y *= -1;
       state.ballSpeed.setLength(
