@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Arkanoid 3D</title>
+    <link rel="stylesheet" href="src/style.css" />
+  </head>
+  <body>
+    <div class="stats">
+      <div>
+        <span>Score: </span>
+        <span id="score">0</span>
+      </div>
+      <div>
+        <span>Ball speed: </span>
+        <span id="speed">0</span>
+      </div>
+      <div>
+        <span>Rows: </span>
+        <button id="minus-row">-</button>
+        <span id="rows">5</span>
+        <button id="plus-row">+</button>
+      </div>
+      <hr />
+      <button id="pause">Pause [p] / [SPC]</button>
+      <br />
+      <button id="reset">Reset [r]</button>
+    </div>
+    <script type="module" src="src/main.ts"></script>
+  </body>
+</html>

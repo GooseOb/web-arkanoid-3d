@@ -1,0 +1,23 @@
+body {
+  margin: 0;
+}
+.stats {
+  position: absolute;
+  padding: 10px;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  color: #fff;
+}
+button {
+  border: none;
+  border-radius: 5px;
+  padding: 3px 5px;
+  margin: 3px;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #555;
+}
