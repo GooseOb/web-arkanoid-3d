@@ -145,6 +145,7 @@ window.addEventListener("mousemove", (event) => {
 });
 
 window.addEventListener("keyup", (e) => {
+  if (e.ctrlKey) return;
   switch (e.key) {
     case "r":
       setupScene();
