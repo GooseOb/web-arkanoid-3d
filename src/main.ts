@@ -10,6 +10,7 @@ const BLOCK_COLS = 15;
 const BALL_RADIUS = 0.1;
 const MIN_BALL_SPEED = 0.03;
 const MAX_BALL_SPEED = 0.1;
+const MAX_ROWS = 18;
 
 const paddleGeometry = new THREE.BoxGeometry(PADDLE_WIDTH, PADDLE_HEIGHT, 0.1);
 const paddleMaterial = new THREE.MeshStandardMaterial({
@@ -215,8 +216,8 @@ const getRowsSetter = (calc: (rows: number) => number) => () => {
   rowElement.textContent = blockRows.toString();
   setupScene();
 };
-const increaseRows = getRowsSetter((r) => r + 1);
-const decreaseRows = getRowsSetter((r) => r - 1);
+const increaseRows = getRowsSetter((r) => (r === MAX_ROWS ? r : r + 1));
+const decreaseRows = getRowsSetter((r) => (r === 1 ? r : r - 1));
 
 document.getElementById("reset")!.addEventListener("click", setupScene);
 document.getElementById("pause")!.addEventListener("click", pause);
