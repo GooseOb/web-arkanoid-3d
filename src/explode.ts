@@ -6,18 +6,15 @@ export const createExplosion = (
   color: THREE.Color,
 ) => {
   const PARTICLE_COUNT = 50;
-  const PARTICLE_SIZE = 0.05;
+  const PARTICLE_SIZE = 0.1;
 
-  // Create geometry and material for particles
   const geometry = new THREE.BufferGeometry();
   const positions: number[] = [];
   const velocities: number[] = [];
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    // Random initial position (around the block's position)
     positions.push(position.x, position.y, position.z);
 
-    // Random velocity for explosion
     velocities.push(
       (Math.random() - 0.5) * 2, // x
       (Math.random() - 0.5) * 2, // y
@@ -25,7 +22,6 @@ export const createExplosion = (
     );
   }
 
-  // Add positions and velocities to geometry
   geometry.setAttribute(
     "position",
     new THREE.Float32BufferAttribute(positions, 3),
@@ -41,16 +37,19 @@ export const createExplosion = (
 
   const particles = new THREE.Points(geometry, material);
 
-  // Add particles to the scene
+  const explosionLight = new THREE.PointLight(color, 1.5, 5);
+  explosionLight.position.copy(position);
+
+  scene.add(explosionLight);
   scene.add(particles);
 
-  // Animate particles and remove them after a short duration
-  const duration = 0.5; // seconds
+  const DURATION = 0.5;
   const startTime = performance.now();
   const animateParticles = () => {
     const elapsedTime = (performance.now() - startTime) / 1000;
-    if (elapsedTime > duration) {
+    if (elapsedTime > DURATION) {
       scene.remove(particles);
+      scene.remove(explosionLight);
       geometry.dispose();
       material.dispose();
       return;
@@ -68,7 +67,9 @@ export const createExplosion = (
 
     geometry.attributes.position.needsUpdate = true;
 
-    material.opacity = 1.0 - elapsedTime / duration; // Fade out
+    explosionLight.intensity = Math.max(1.5 * (0.3 - elapsedTime), 0);
+    material.opacity = 1.0 - elapsedTime / DURATION;
+
     requestAnimationFrame(animateParticles);
   };
 
