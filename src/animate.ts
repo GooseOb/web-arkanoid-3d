@@ -34,7 +34,13 @@ export const animate = () => {
     ballX >= paddle.position.x - PADDLE_WIDTH / 2 &&
     ballX <= paddle.position.x + PADDLE_WIDTH / 2
   ) {
-    state.ballSpeed.y *= -1;
+    const offset = (ballX - paddle.position.x) / (PADDLE_WIDTH / 2);
+
+    const angle = (Math.PI / 3) * offset;
+    const speed = state.ballSpeed.length();
+
+    state.ballSpeed.set(Math.sin(angle) * speed, Math.cos(angle) * speed, 0);
+
     ball.position.y = paddle.position.y + PADDLE_HEIGHT;
   }
 
