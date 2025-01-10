@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { state } from "./state";
 import {
   MIN_BALL_SPEED,
@@ -12,12 +13,104 @@ import { scene, paddle, ball } from "./scene";
 import { camera } from "./camera";
 import { renderer } from "./renderer";
 import { createExplosion } from "./explode";
-import { MeshStandardMaterial } from "three";
+import { Asteroid, AsteroidShaderMaterial } from "./asteroid";
+
+const WALL_LEFT = -20;
+const WALL_RIGHT = 20;
+const WALL_TOP = 20;
+const WALL_BOTTOM = -30;
+const WALL_DEPTH = -12; // Optional, if you want to give depth to far wall
+const SPAWN_DEPTH = -10; // Define depth where asteroids will spawn from
+
+const getRandomColor = () => new THREE.Color(Math.random() * 0xffffff);
+
+const spawnAsteroid = () => {
+  const asteroid = new Asteroid(getRandomColor(), getRandomColor());
+
+  const rand = () => (Math.random() - 0.5) * 0.02;
+  const velocityZ = (Math.random() - 0.6) * 0.02;
+
+  switch (Math.floor(Math.random() * 4)) {
+    case 0: // Left wall
+      asteroid.position.set(WALL_LEFT, Math.random() * 6 - 3, SPAWN_DEPTH);
+      asteroid.velocity = new THREE.Vector3(rand(), rand(), velocityZ);
+      break;
+    case 1: // Right wall
+      asteroid.position.set(WALL_RIGHT, Math.random() * 6 - 3, SPAWN_DEPTH);
+      asteroid.velocity = new THREE.Vector3(-rand(), rand(), velocityZ);
+      break;
+    case 2: // Top wall
+      asteroid.position.set(Math.random() * 10 - 5, WALL_TOP, SPAWN_DEPTH);
+      asteroid.velocity = new THREE.Vector3(rand(), -rand(), velocityZ);
+      break;
+    case 3: // Bottom wall
+      asteroid.position.set(Math.random() * 10 - 5, WALL_BOTTOM, SPAWN_DEPTH);
+      asteroid.velocity = new THREE.Vector3(rand(), rand(), velocityZ);
+      break;
+  }
+
+  scene.add(asteroid);
+
+  return asteroid;
+};
+
+const removeAsteroidsOutOfBounds = () => {
+  scene.children = scene.children.filter((object) => {
+    if (object instanceof Asteroid) {
+      const { x, y } = object.position;
+
+      const MOD = 20;
+      if (
+        x < WALL_LEFT * MOD ||
+        x > WALL_RIGHT * MOD ||
+        y < WALL_BOTTOM * MOD ||
+        y > WALL_TOP * MOD
+      ) {
+        scene.remove(object);
+        return false;
+      }
+    }
+    return true;
+  });
+};
+
+const asteroidCount = Math.floor(Math.random() * 100) + 50;
+for (let i = 0; i < asteroidCount; i++) {
+  const asteroid = spawnAsteroid();
+  asteroid.position.add(asteroid.velocity.clone().multiplyScalar(2000));
+}
+
+let asteroidSpawnCooldown = 0;
+const animateAsteroids = () => {
+  scene.children.forEach((object) => {
+    if (object instanceof Asteroid) {
+      // Rotation
+      object.rotation.x += object.rotationSpeed;
+      object.rotation.y += object.rotationSpeed;
+
+      // Movement
+      object.position.add(object.velocity);
+
+      // Shader animation
+      const material = object.material as AsteroidShaderMaterial;
+      material.uniforms.time.value += 0.01;
+    }
+  });
+  removeAsteroidsOutOfBounds();
+
+  asteroidSpawnCooldown -= 1;
+  if (asteroidSpawnCooldown <= 0) {
+    spawnAsteroid();
+    // Spawn every 1-3 seconds
+    asteroidSpawnCooldown = Math.floor(Math.random() * 200) + 100;
+  }
+};
 
 const BALL_ACCELERATION_FACTOR = 1.03;
 export const animate = () => {
   requestAnimationFrame(animate);
   if (state.isPaused) return;
+  animateAsteroids();
 
   const { x: ballX, y: ballY } = ball.position;
 
@@ -52,7 +145,7 @@ export const animate = () => {
   // Ball collision with blocks
   state.blocks = state.blocks.filter((block) => {
     if (ball.position.distanceTo(block.position) < 0.3) {
-      const blockColor = (block.material as MeshStandardMaterial).color;
+      const blockColor = (block.material as THREE.MeshStandardMaterial).color;
       createExplosion(block.position.clone(), blockColor);
       scene.remove(block);
       state.ballSpeed.y *= -1;
