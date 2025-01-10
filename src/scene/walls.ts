@@ -1,6 +1,6 @@
 import * as THREE from "three";
+import { WALL_THICKNESS } from "../constants";
 
-const WALL_THICKNESS = 1.5;
 const wallMaterial = new THREE.MeshStandardMaterial({
   color: 0x222222,
   emissive: new THREE.Color(0x222222),

@@ -6,6 +6,8 @@ import {
   BLOCK_COLS,
   PADDLE_HEIGHT,
   PADDLE_WIDTH,
+  WALL_THICKNESS,
+  PADDLE_DEPTH,
 } from "./constants";
 import { end } from "./end";
 import { speedElement, scoreElement } from "./elems";
@@ -19,7 +21,6 @@ const WALL_LEFT = -20;
 const WALL_RIGHT = 20;
 const WALL_TOP = 20;
 const WALL_BOTTOM = -30;
-const WALL_DEPTH = -12; // Optional, if you want to give depth to far wall
 const SPAWN_DEPTH = -10; // Define depth where asteroids will spawn from
 
 const getRandomColor = () => new THREE.Color(Math.random() * 0xffffff);
@@ -27,25 +28,25 @@ const getRandomColor = () => new THREE.Color(Math.random() * 0xffffff);
 const spawnAsteroid = () => {
   const asteroid = new Asteroid(getRandomColor(), getRandomColor());
 
-  const rand = () => (Math.random() - 0.5) * 0.02;
+  const randVel = () => (Math.random() - 0.5) * 0.02;
   const velocityZ = (Math.random() - 0.6) * 0.02;
 
   switch (Math.floor(Math.random() * 4)) {
     case 0: // Left wall
       asteroid.position.set(WALL_LEFT, Math.random() * 6 - 3, SPAWN_DEPTH);
-      asteroid.velocity = new THREE.Vector3(rand(), rand(), velocityZ);
+      asteroid.velocity = new THREE.Vector3(randVel(), randVel(), velocityZ);
       break;
     case 1: // Right wall
       asteroid.position.set(WALL_RIGHT, Math.random() * 6 - 3, SPAWN_DEPTH);
-      asteroid.velocity = new THREE.Vector3(-rand(), rand(), velocityZ);
+      asteroid.velocity = new THREE.Vector3(-randVel(), randVel(), velocityZ);
       break;
     case 2: // Top wall
       asteroid.position.set(Math.random() * 10 - 5, WALL_TOP, SPAWN_DEPTH);
-      asteroid.velocity = new THREE.Vector3(rand(), -rand(), velocityZ);
+      asteroid.velocity = new THREE.Vector3(randVel(), -randVel(), velocityZ);
       break;
     case 3: // Bottom wall
       asteroid.position.set(Math.random() * 10 - 5, WALL_BOTTOM, SPAWN_DEPTH);
-      asteroid.velocity = new THREE.Vector3(rand(), rand(), velocityZ);
+      asteroid.velocity = new THREE.Vector3(randVel(), randVel(), velocityZ);
       break;
   }
 
@@ -57,14 +58,15 @@ const spawnAsteroid = () => {
 const removeAsteroidsOutOfBounds = () => {
   scene.children = scene.children.filter((object) => {
     if (object instanceof Asteroid) {
-      const { x, y } = object.position;
+      const { x, y, z } = object.position;
 
       const MOD = 20;
       if (
         x < WALL_LEFT * MOD ||
         x > WALL_RIGHT * MOD ||
         y < WALL_BOTTOM * MOD ||
-        y > WALL_TOP * MOD
+        y > WALL_TOP * MOD ||
+        z > 5
       ) {
         scene.remove(object);
         return false;
@@ -74,11 +76,24 @@ const removeAsteroidsOutOfBounds = () => {
   });
 };
 
-const asteroidCount = Math.floor(Math.random() * 100) + 50;
+const asteroidCount = Math.floor(Math.random() * 100) + 200;
 for (let i = 0; i < asteroidCount; i++) {
   const asteroid = spawnAsteroid();
   asteroid.position.add(asteroid.velocity.clone().multiplyScalar(2000));
 }
+
+const isPaddleCollision = (object: THREE.Mesh) =>
+  object.position.y <= paddle.position.y + PADDLE_HEIGHT &&
+  object.position.y >= paddle.position.y - PADDLE_HEIGHT &&
+  object.position.x >= paddle.position.x - PADDLE_WIDTH / 2 &&
+  object.position.x <= paddle.position.x + PADDLE_WIDTH / 2 &&
+  object.position.z >= paddle.position.z - PADDLE_DEPTH / 2 &&
+  object.position.z <= paddle.position.z + PADDLE_DEPTH / 2;
+
+const isWallCollision = (object: THREE.Mesh) =>
+  object.position.z > -WALL_THICKNESS / 2 &&
+  object.position.z < WALL_THICKNESS / 2 &&
+  (object.position.x < -5 || object.position.x > 5 || object.position.y > 3);
 
 let asteroidSpawnCooldown = 0;
 const animateAsteroids = () => {
@@ -94,8 +109,43 @@ const animateAsteroids = () => {
       // Shader animation
       const material = object.material as AsteroidShaderMaterial;
       material.uniforms.time.value += 0.01;
+
+      // Check collision
+      if (
+        object.position.distanceTo(ball.position) < 0.3 ||
+        isPaddleCollision(object) ||
+        isWallCollision(object)
+      ) {
+        createExplosion(object.position.clone(), object.color);
+        scene.remove(object);
+      }
+
+      // Check collision with other asteroids
+      for (const otherObject of scene.children) {
+        if (otherObject instanceof Asteroid && otherObject !== object) {
+          if (object.position.distanceTo(otherObject.position) < 0.3) {
+            createExplosion(object.position.clone(), object.color);
+            createExplosion(otherObject.position.clone(), object.color);
+            scene.remove(object);
+            scene.remove(otherObject);
+          }
+        }
+      }
+
+      for (const block of state.blocks) {
+        if (object.position.distanceTo(block.position) < 0.3) {
+          createExplosion(
+            block.position.clone(),
+            (block.material as THREE.MeshStandardMaterial).color,
+          );
+          createExplosion(object.position.clone(), object.color);
+          scene.remove(block);
+          scene.remove(object);
+        }
+      }
     }
   });
+
   removeAsteroidsOutOfBounds();
 
   asteroidSpawnCooldown -= 1;
