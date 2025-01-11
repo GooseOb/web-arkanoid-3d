@@ -16,14 +16,13 @@ import { camera } from "./camera";
 import { renderer } from "./renderer";
 import { createExplosion } from "./explode";
 import { Asteroid, AsteroidShaderMaterial } from "./asteroid";
+import { getRandomColor } from "./colors";
 
 const WALL_LEFT = -20;
 const WALL_RIGHT = 20;
 const WALL_TOP = 20;
 const WALL_BOTTOM = -30;
 const SPAWN_DEPTH = -10; // Define depth where asteroids will spawn from
-
-const getRandomColor = () => new THREE.Color(Math.random() * 0xffffff);
 
 const spawnAsteroid = () => {
   const asteroid = new Asteroid(getRandomColor(), getRandomColor());

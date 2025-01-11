@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { state } from "./state";
 import { MIN_BALL_SPEED, BLOCK_COLS, BLOCK_SIZE } from "./constants";
-import { getRainbowColor } from "./rainbow-color";
+import { getRainbowColor } from "./colors";
 import { scene, paddle, ball } from "./scene";
 
 export const resetScene = () => {
