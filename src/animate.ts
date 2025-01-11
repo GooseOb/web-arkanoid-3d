@@ -157,9 +157,7 @@ const animateAsteroids = () => {
             block.position.clone(),
             (block.material as THREE.MeshStandardMaterial).color,
           );
-          createExplosion(object.position.clone(), object.color);
           scene.remove(block);
-          scene.remove(object);
         }
       }
     }
