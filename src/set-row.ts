@@ -9,5 +9,5 @@ const getRowsSetter = (calc: (rows: number) => number) => () => {
   resetScene();
 };
 
-export const increaseRows = getRowsSetter((r) => (r === MAX_ROWS ? r : r + 1));
-export const decreaseRows = getRowsSetter((r) => (r === 1 ? r : r - 1));
+export const incrementRows = getRowsSetter((r) => (r === MAX_ROWS ? r : r + 1));
+export const decrementRows = getRowsSetter((r) => (r === 1 ? r : r - 1));

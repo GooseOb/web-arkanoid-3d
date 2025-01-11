@@ -1,6 +1,6 @@
 import { paddle } from "./scene";
 import { resetScene } from "./reset";
-import { decreaseRows, increaseRows } from "./set-row";
+import { decrementRows, incrementRows } from "./set-row";
 import { animate } from "./animate";
 import { camera } from "./camera";
 import { renderer } from "./renderer";
@@ -23,10 +23,10 @@ window.addEventListener("keyup", (e) => {
       break;
     case "+":
     case "=":
-      increaseRows();
+      incrementRows();
       break;
     case "-":
-      decreaseRows();
+      decrementRows();
   }
 });
 
@@ -42,8 +42,8 @@ const pause = () => {
 
 document.getElementById("reset")!.addEventListener("click", resetScene);
 document.getElementById("pause")!.addEventListener("click", pause);
-document.getElementById("plus-row")!.addEventListener("click", increaseRows);
-document.getElementById("minus-row")!.addEventListener("click", decreaseRows);
+document.getElementById("plus-row")!.addEventListener("click", incrementRows);
+document.getElementById("minus-row")!.addEventListener("click", decrementRows);
 
 document.body.appendChild(renderer.domElement);
 

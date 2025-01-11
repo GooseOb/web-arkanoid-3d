@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { state } from "./state";
 import {
-  MIN_BALL_SPEED,
   MAX_BALL_SPEED,
   BLOCK_COLS,
   PADDLE_HEIGHT,
@@ -10,7 +9,7 @@ import {
   PADDLE_DEPTH,
   BALL_RADIUS,
 } from "./constants";
-import { end } from "./end";
+import { lose, win } from "./end";
 import { speedElement, scoreElement } from "./elems";
 import { scene, paddle, ball } from "./scene";
 import { camera } from "./camera";
@@ -243,8 +242,8 @@ export const animate = () => {
   renderer.render(scene, camera);
 
   if (state.blocks.length === 0) {
-    end("You win!");
+    win();
   } else if (ball.position.y < -3) {
-    end("Game over!");
+    lose();
   }
 };
