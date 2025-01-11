@@ -137,7 +137,10 @@ const animateAsteroids = () => {
       // Check collision with other asteroids
       for (const otherObject of scene.children) {
         if (otherObject instanceof Asteroid && otherObject !== object) {
-          if (object.position.distanceTo(otherObject.position) < 0.3) {
+          if (
+            object.position.distanceTo(otherObject.position) <
+            object.radius + otherObject.radius
+          ) {
             createExplosion(object.position.clone(), object.color);
             createExplosion(otherObject.position.clone(), object.color);
             scene.remove(object);
@@ -147,7 +150,10 @@ const animateAsteroids = () => {
       }
 
       for (const block of state.blocks) {
-        if (object.position.distanceTo(block.position) < 0.3) {
+        if (
+          scene.children.includes(block) &&
+          object.position.distanceTo(block.position) < object.radius
+        ) {
           createExplosion(
             block.position.clone(),
             (block.material as THREE.MeshStandardMaterial).color,
@@ -206,6 +212,9 @@ export const animate = () => {
   // Ball movement
   ball.position.add(state.ballSpeed);
 
+  const oldSpeed = state.ballSpeed.length();
+  let newSpeed = oldSpeed;
+
   // Ball collision with blocks
   state.blocks = state.blocks.filter((block) => {
     if (ball.position.distanceTo(block.position) < 0.3) {
@@ -213,23 +222,23 @@ export const animate = () => {
       createExplosion(block.position.clone(), blockColor);
       scene.remove(block);
       state.ballSpeed.y *= -1;
-      state.ballSpeed.setLength(
-        Math.min(
-          MAX_BALL_SPEED,
-          Math.max(
-            MIN_BALL_SPEED,
-            state.ballSpeed.length() * BALL_ACCELERATION_FACTOR,
-          ),
-        ),
-      );
+      if (newSpeed <= MAX_BALL_SPEED) {
+        newSpeed *= BALL_ACCELERATION_FACTOR;
+      }
       return false;
     }
     return true;
   });
 
-  speedElement.textContent = (state.ballSpeed.length() * 1e3).toFixed(2);
-  state.score = state.blockRows * BLOCK_COLS - state.blocks.length;
-  scoreElement.textContent = state.score.toString();
+  if (oldSpeed !== newSpeed) {
+    state.ballSpeed.setLength(newSpeed);
+    speedElement.textContent = (state.ballSpeed.length() * 1e3).toFixed(2);
+  }
+  const newScore = state.blockRows * BLOCK_COLS - state.blocks.length;
+  if (state.score !== newScore) {
+    state.score = newScore;
+    scoreElement.textContent = newScore.toString();
+  }
 
   renderer.render(scene, camera);
 
