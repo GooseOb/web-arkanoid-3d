@@ -8,6 +8,7 @@ import {
   PADDLE_WIDTH,
   WALL_THICKNESS,
   PADDLE_DEPTH,
+  BALL_RADIUS,
 } from "./constants";
 import { end } from "./end";
 import { speedElement, scoreElement } from "./elems";
@@ -22,10 +23,11 @@ const WALL_LEFT = -20;
 const WALL_RIGHT = 20;
 const WALL_TOP = 20;
 const WALL_BOTTOM = -30;
-const SPAWN_DEPTH = -10; // Define depth where asteroids will spawn from
+const SPAWN_DEPTH = -10;
 
-const spawnAsteroid = () => {
-  const asteroid = new Asteroid(getRandomColor(), getRandomColor());
+const spawnRandomAsteroid = () => {
+  const radius = Math.random() * 0.4 + 0.1;
+  const asteroid = new Asteroid(radius, getRandomColor(), getRandomColor());
 
   const randVel = () => (Math.random() - 0.5) * 0.02;
   const velocityZ = (Math.random() - 0.6) * 0.02;
@@ -77,17 +79,29 @@ const removeAsteroidsOutOfBounds = () => {
 
 const asteroidCount = Math.floor(Math.random() * 100) + 200;
 for (let i = 0; i < asteroidCount; i++) {
-  const asteroid = spawnAsteroid();
+  const asteroid = spawnRandomAsteroid();
   asteroid.position.add(asteroid.velocity.clone().multiplyScalar(2000));
 }
 
-const isPaddleCollision = (object: THREE.Mesh) =>
-  object.position.y <= paddle.position.y + PADDLE_HEIGHT &&
-  object.position.y >= paddle.position.y - PADDLE_HEIGHT &&
-  object.position.x >= paddle.position.x - PADDLE_WIDTH / 2 &&
-  object.position.x <= paddle.position.x + PADDLE_WIDTH / 2 &&
-  object.position.z >= paddle.position.z - PADDLE_DEPTH / 2 &&
-  object.position.z <= paddle.position.z + PADDLE_DEPTH / 2;
+const isPaddleCollision = (asteroid: Asteroid) => {
+  const paddleHalfWidth = PADDLE_WIDTH / 2;
+  const paddleHalfHeight = PADDLE_HEIGHT / 2;
+  const paddleHalfDepth = PADDLE_DEPTH / 2;
+
+  return (
+    asteroid.position.x + asteroid.radius >=
+      paddle.position.x - paddleHalfWidth &&
+    asteroid.position.x - asteroid.radius <=
+      paddle.position.x + paddleHalfWidth &&
+    asteroid.position.y + asteroid.radius >=
+      paddle.position.y - paddleHalfHeight &&
+    asteroid.position.y - asteroid.radius <=
+      paddle.position.y + paddleHalfHeight &&
+    asteroid.position.z + asteroid.radius >=
+      paddle.position.z - paddleHalfDepth &&
+    asteroid.position.z - asteroid.radius <= paddle.position.z + paddleHalfDepth
+  );
+};
 
 const isWallCollision = (object: THREE.Mesh) =>
   object.position.z > -WALL_THICKNESS / 2 &&
@@ -111,7 +125,8 @@ const animateAsteroids = () => {
 
       // Check collision
       if (
-        object.position.distanceTo(ball.position) < 0.3 ||
+        object.position.distanceTo(ball.position) <
+          object.radius + BALL_RADIUS ||
         isPaddleCollision(object) ||
         isWallCollision(object)
       ) {
@@ -149,7 +164,7 @@ const animateAsteroids = () => {
 
   asteroidSpawnCooldown -= 1;
   if (asteroidSpawnCooldown <= 0) {
-    spawnAsteroid();
+    spawnRandomAsteroid();
     // Spawn every 1-3 seconds
     asteroidSpawnCooldown = Math.floor(Math.random() * 200) + 100;
   }
@@ -175,8 +190,8 @@ export const animate = () => {
   if (
     ballY <= paddle.position.y + PADDLE_HEIGHT &&
     ballY >= paddle.position.y - PADDLE_HEIGHT &&
-    ballX >= paddle.position.x - PADDLE_WIDTH / 2 &&
-    ballX <= paddle.position.x + PADDLE_WIDTH / 2
+    ballX <= paddle.position.x + PADDLE_WIDTH / 2 &&
+    ballX >= paddle.position.x - PADDLE_WIDTH / 2
   ) {
     const offset = (ballX - paddle.position.x) / (PADDLE_WIDTH / 2);
 
