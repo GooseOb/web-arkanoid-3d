@@ -13,12 +13,12 @@ export const resetScene = () => {
   ball.position.y = -2.3;
   state.ballSpeed.set(MIN_BALL_SPEED, MIN_BALL_SPEED, 0);
 
+  const a = (BLOCK_COLS - 1) / 2;
   for (let i = 0; i < state.blockRows; i++) {
     const rowMaterial = new THREE.MeshStandardMaterial({
       color: getRainbowColor(state.blockRows, i),
       emissive: new THREE.Color(0x000000),
     });
-    const a = (BLOCK_COLS - 1) / 2;
     for (let j = -a; j <= a; j++) {
       const block = new THREE.Mesh(
         new THREE.BoxGeometry(
@@ -33,6 +33,9 @@ export const resetScene = () => {
       scene.add(block);
     }
   }
+
+  for (const asteroid of state.asteroids) scene.remove(asteroid);
+  state.asteroids = [];
 
   const asteroidCount = Math.floor(Math.random() * 100) + 200;
   for (let i = 0; i < asteroidCount; i++) {

@@ -9,6 +9,7 @@ import {
   WALL_RIGHT,
   WALL_TOP,
 } from "../../constants";
+import { state } from "../../state";
 
 export const spawnRandomAsteroid = () => {
   const radius = Math.random() * 0.4 + 0.1;
@@ -37,6 +38,7 @@ export const spawnRandomAsteroid = () => {
   }
 
   scene.add(asteroid);
+  state.asteroids.push(asteroid);
 
   return asteroid;
 };
