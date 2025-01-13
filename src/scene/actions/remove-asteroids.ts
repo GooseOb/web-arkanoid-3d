@@ -3,7 +3,7 @@ import { WALL_BOTTOM, WALL_LEFT, WALL_RIGHT, WALL_TOP } from "../../constants";
 import { Asteroid } from "../../asteroid";
 
 export const removeAsteroidsOutOfBounds = () => {
-  scene.children = scene.children.filter((object) => {
+  for (const object of scene.children) {
     if (object instanceof Asteroid) {
       const { x, y, z } = object.position;
 
@@ -16,9 +16,7 @@ export const removeAsteroidsOutOfBounds = () => {
         z > 5
       ) {
         scene.remove(object);
-        return false;
       }
     }
-    return true;
-  });
+  }
 };
