@@ -1,8 +1,9 @@
 import * as THREE from "three";
-import { state } from "./state";
-import { MIN_BALL_SPEED, BLOCK_COLS, BLOCK_SIZE } from "./constants";
-import { getRainbowColor } from "./colors";
-import { scene, paddle, ball } from "./scene";
+import { state } from "../../state";
+import { MIN_BALL_SPEED, BLOCK_COLS, BLOCK_SIZE } from "../../constants";
+import { getRainbowColor } from "../../colors";
+import { scene, paddle, ball } from "..";
+import { spawnRandomAsteroid } from "./spawn-asteroid";
 
 export const resetScene = () => {
   for (const block of state.blocks) scene.remove(block);
@@ -31,5 +32,11 @@ export const resetScene = () => {
       state.blocks.push(block);
       scene.add(block);
     }
+  }
+
+  const asteroidCount = Math.floor(Math.random() * 100) + 200;
+  for (let i = 0; i < asteroidCount; i++) {
+    const asteroid = spawnRandomAsteroid();
+    asteroid.position.add(asteroid.velocity.clone().multiplyScalar(2000));
   }
 };

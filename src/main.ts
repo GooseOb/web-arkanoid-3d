@@ -1,10 +1,10 @@
-import { paddle } from "./scene";
-import { resetScene } from "./reset";
+import { paddle, resetScene } from "./scene";
 import { decrementRows, incrementRows } from "./set-row";
 import { animate } from "./animate";
 import { camera } from "./camera";
 import { renderer } from "./renderer";
 import { state } from "./state";
+import { speedElement } from "./elems";
 
 window.addEventListener("mousemove", (e) => {
   const x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -48,4 +48,5 @@ document.getElementById("minus-row")!.addEventListener("click", decrementRows);
 document.body.appendChild(renderer.domElement);
 
 resetScene();
+speedElement.textContent = (state.ballSpeed.length() * 1e3).toFixed(2);
 animate();

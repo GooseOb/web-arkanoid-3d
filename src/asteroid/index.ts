@@ -22,3 +22,4 @@ class Asteroid extends THREE.Mesh {
 }
 
 export { Asteroid, AsteroidShaderMaterial };
+export * from "./animate";

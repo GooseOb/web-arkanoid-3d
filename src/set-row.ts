@@ -1,6 +1,6 @@
 import { MAX_ROWS } from "./constants";
 import { rowElement } from "./elems";
-import { resetScene } from "./reset";
+import { resetScene } from "./scene";
 import { state } from "./state";
 
 const getRowsSetter = (calc: (rows: number) => number) => () => {

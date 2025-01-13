@@ -1,4 +1,4 @@
-import { resetScene } from "./reset";
+import { resetScene } from "./scene";
 import { incrementRows } from "./set-row";
 import { state } from "./state";
 

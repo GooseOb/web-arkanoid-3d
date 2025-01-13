@@ -27,3 +27,4 @@ const animateSkybox = () => {
 animateSkybox();
 
 export { scene, paddle, ball, rightWall, leftWall, topWall };
+export * from "./actions";
