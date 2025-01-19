@@ -4,6 +4,7 @@ import { scene } from "./scene";
 export const createExplosion = (
   position: THREE.Vector3,
   color: THREE.Color,
+  sound?: THREE.Audio | THREE.PositionalAudio,
 ) => {
   const PARTICLE_COUNT = 50;
   const PARTICLE_SIZE = 0.1;
@@ -42,6 +43,13 @@ export const createExplosion = (
 
   scene.add(explosionLight);
   scene.add(particles);
+
+  if (sound) {
+    sound = sound.clone();
+    sound.position.copy(position);
+    console.log(sound.position);
+    sound.play();
+  }
 
   const DURATION = 0.5;
   const startTime = performance.now();

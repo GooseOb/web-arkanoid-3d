@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  position: relative;
 }
 .stats {
   position: absolute;
@@ -20,4 +21,12 @@ button {
 }
 button:hover {
   background-color: #555;
+}
+#start {
+  position: absolute;
+  font-size: 4rem;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
 }

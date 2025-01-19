@@ -5,6 +5,7 @@ import { camera } from "./camera";
 import { renderer } from "./renderer";
 import { state } from "./state";
 import { speedElement } from "./elems";
+import { resumeAudioContext } from "./sounds/listener";
 
 window.addEventListener("mousemove", (e) => {
   const x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -47,6 +48,14 @@ document.getElementById("minus-row")!.addEventListener("click", decrementRows);
 
 document.body.appendChild(renderer.domElement);
 
-resetScene();
-speedElement.textContent = (state.ballSpeed.length() * 1e3).toFixed(2);
-animate();
+document.addEventListener(
+  "click",
+  () => {
+    document.getElementById("start")!.remove();
+    resetScene();
+    speedElement.textContent = (state.ballSpeed.length() * 1e3).toFixed(2);
+    animate();
+    resumeAudioContext();
+  },
+  { once: true },
+);

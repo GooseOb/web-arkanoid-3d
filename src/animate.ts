@@ -11,6 +11,7 @@ import { scene, paddle, ball, removeBlocks } from "./scene";
 import { camera } from "./camera";
 import { renderer } from "./renderer";
 import { animateAsteroids } from "./asteroid";
+import { kickSound } from "./sounds/kick";
 
 const BALL_ACCELERATION_FACTOR = 1.02;
 const animateBall = () => {
@@ -18,9 +19,11 @@ const animateBall = () => {
 
   if (ballX > 4.9 || ballX < -4.9) {
     state.ballSpeed.x *= -1;
+    kickSound.clone().play();
   }
   if (ballY > 2.9) {
     state.ballSpeed.y *= -1;
+    kickSound.clone().play();
   }
 
   if (
@@ -37,6 +40,7 @@ const animateBall = () => {
     state.ballSpeed.set(Math.sin(angle) * speed, Math.cos(angle) * speed, 0);
 
     ball.position.y = paddle.position.y + PADDLE_HEIGHT;
+    kickSound.clone().play();
   }
 
   ball.position.add(state.ballSpeed);

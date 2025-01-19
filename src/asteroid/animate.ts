@@ -16,6 +16,8 @@ import {
 } from "../scene";
 import { createExplosion } from "../explode";
 import { Asteroid, AsteroidShaderMaterial } from "../asteroid";
+import { asteroidExplosionSound } from "../sounds/asteroid";
+import { camera } from "../camera";
 
 const isPaddleCollision = (asteroid: Asteroid) => {
   const paddleHalfWidth = PADDLE_WIDTH / 2;
@@ -64,7 +66,11 @@ export const animateAsteroids = () => {
         isPaddleCollision(object) ||
         isWallCollision(object)
       ) {
-        createExplosion(object.position.clone(), object.color);
+        let sound: THREE.PositionalAudio | undefined;
+        if (camera.position.distanceTo(object.position) < 8) {
+          sound = asteroidExplosionSound.clone();
+        }
+        createExplosion(object.position.clone(), object.color, sound);
         scene.remove(object);
       }
 
