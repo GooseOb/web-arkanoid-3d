@@ -4,6 +4,7 @@ import { MIN_BALL_SPEED, BLOCK_COLS, BLOCK_SIZE } from "../../constants";
 import { getRainbowColor } from "../../colors";
 import { scene, paddle, ball } from "..";
 import { spawnRandomAsteroid } from "./spawn-asteroid";
+import { speedElement } from "../../elems";
 
 export const resetScene = () => {
   for (const block of state.blocks) scene.remove(block);
@@ -42,4 +43,5 @@ export const resetScene = () => {
     const asteroid = spawnRandomAsteroid();
     asteroid.position.add(asteroid.velocity.clone().multiplyScalar(2000));
   }
+  speedElement.textContent = (state.ballSpeed.length() * 1e3).toFixed(2);
 };
