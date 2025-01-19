@@ -44,6 +44,7 @@ const animateBall = () => {
   }
 
   ball.position.add(state.ballSpeed);
+  camera.lookAt(ball.position);
 
   const oldSpeed = state.ballSpeed.length();
   let newSpeed = oldSpeed;

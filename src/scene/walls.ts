@@ -5,7 +5,7 @@ const wallMaterial = new THREE.MeshStandardMaterial({
   color: 0x222222,
   emissive: new THREE.Color(0x222222),
 });
-const wallGeometry = new THREE.BoxGeometry(WALL_THICKNESS * 2, 10);
+const wallGeometry = new THREE.BoxGeometry(WALL_THICKNESS * 2, 50);
 
 const leftWall = new THREE.Mesh(wallGeometry, wallMaterial);
 leftWall.position.set(-5 - WALL_THICKNESS, 0, 0);
