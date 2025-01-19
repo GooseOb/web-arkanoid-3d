@@ -5,12 +5,12 @@ import url from "/625114__newlocknew__expldsgn_powerful-explosion-21_em_28lrs.wa
 export const asteroidExplosionSound = new THREE.PositionalAudio(listener);
 
 const loader = new THREE.AudioLoader();
-loader.load(url, (buffer) => {
+loader.loadAsync(url).then((buffer) => {
   asteroidExplosionSound.setBuffer(buffer);
   asteroidExplosionSound.setLoop(false);
   asteroidExplosionSound.setVolume(1);
   asteroidExplosionSound.setDistanceModel("inverse");
-  asteroidExplosionSound.setRefDistance(5); // Full volume within 5 units
-  asteroidExplosionSound.setMaxDistance(10); // Sound is inaudible beyond 50 units
+  asteroidExplosionSound.setRefDistance(5);
+  asteroidExplosionSound.setMaxDistance(10);
   asteroidExplosionSound.setRolloffFactor(2);
 });
