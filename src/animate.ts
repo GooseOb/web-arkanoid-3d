@@ -13,17 +13,23 @@ import { renderer } from "./renderer";
 import { animateAsteroids } from "./asteroid";
 import { kickSound } from "./sounds/kick";
 
+const playBallSound = () => {
+  const sound = kickSound.clone();
+  sound.position.copy(ball.position);
+  sound.play();
+};
+
 const BALL_ACCELERATION_FACTOR = 1.02;
 const animateBall = () => {
   const { x: ballX, y: ballY } = ball.position;
 
   if (ballX > 4.9 || ballX < -4.9) {
     state.ballSpeed.x *= -1;
-    kickSound.clone().play();
+    playBallSound();
   }
   if (ballY > 2.9) {
     state.ballSpeed.y *= -1;
-    kickSound.clone().play();
+    playBallSound();
   }
 
   if (
@@ -40,7 +46,7 @@ const animateBall = () => {
     state.ballSpeed.set(Math.sin(angle) * speed, Math.cos(angle) * speed, 0);
 
     ball.position.y = paddle.position.y + PADDLE_HEIGHT;
-    kickSound.clone().play();
+    playBallSound();
   }
 
   ball.position.add(state.ballSpeed);
