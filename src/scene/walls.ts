@@ -1,9 +1,16 @@
 import * as THREE from "three";
 import { WALL_THICKNESS } from "../constants";
+import textureUrl from "/corrugated-dark-matte-powder-coated-metal-1845-mm-architextures.jpg";
+
+const texture = new THREE.TextureLoader().load(textureUrl);
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(3, 3);
 
 const wallMaterial = new THREE.MeshStandardMaterial({
-  color: 0x222222,
-  emissive: new THREE.Color(0x222222),
+  color: 0xbbbbbb,
+  map: texture,
+  emissive: new THREE.Color(0x111111),
 });
 const wallGeometry = new THREE.BoxGeometry(WALL_THICKNESS * 2, 50);
 
