@@ -2,9 +2,9 @@ import * as THREE from "three";
 import {
   PADDLE_HEIGHT,
   PADDLE_WIDTH,
-  WALL_THICKNESS,
   PADDLE_DEPTH,
   BALL_RADIUS,
+  WALL_DEPTH,
 } from "../constants";
 import {
   scene,
@@ -40,8 +40,8 @@ const isPaddleCollision = (asteroid: Asteroid) => {
 };
 
 const isWallCollision = (object: THREE.Mesh) =>
-  object.position.z > -WALL_THICKNESS / 2 &&
-  object.position.z < WALL_THICKNESS / 2 &&
+  object.position.z > -WALL_DEPTH / 2 &&
+  object.position.z < WALL_DEPTH / 2 &&
   (object.position.x < -5 || object.position.x > 5 || object.position.y > 3);
 
 let asteroidSpawnCooldown = 0;
@@ -67,7 +67,7 @@ export const animateAsteroids = () => {
         isWallCollision(object)
       ) {
         let sound: THREE.PositionalAudio | undefined;
-        if (camera.position.distanceTo(object.position) < 8) {
+        if (camera.position.distanceTo(object.position) < 10) {
           sound = asteroidExplosionSound.clone();
         }
         createExplosion(object.position.clone(), object.color, sound);

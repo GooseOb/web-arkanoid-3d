@@ -8,6 +8,7 @@ export const MIN_BALL_SPEED = 0.03;
 export const MAX_BALL_SPEED = 0.1;
 export const MAX_ROWS = 18;
 export const WALL_THICKNESS = 10;
+export const WALL_DEPTH = 1.5;
 export const WALL_LEFT = -20;
 export const WALL_RIGHT = 20;
 export const WALL_TOP = 20;
